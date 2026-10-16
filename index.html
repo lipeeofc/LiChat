@@ -137,13 +137,13 @@ const th=()=>{let s;try{s=localStorage.getItem('lichat-theme')}catch(e){}return 
 const err=e=>({'auth/invalid-email':'E-mail inválido','auth/email-already-in-use':'Esse e-mail já tem conta. Toque em Entrar','auth/weak-password':'Senha fraca. Use 6 ou mais caracteres','auth/invalid-credential':'E-mail ou senha incorretos','auth/user-not-found':'Conta não encontrada','auth/wrong-password':'E-mail ou senha incorretos','auth/too-many-requests':'Muitas tentativas. Tente mais tarde','auth/network-request-failed':'Sem internet. Tente de novo','auth/operation-not-allowed':'Ative o login por e-mail e senha no Firebase','auth/unauthorized-domain':'Domínio não autorizado no Firebase'}[e.code]||e.code||e.message);
 function toast(t){const e=document.createElement('div');e.className='toast';e.textContent=t;document.body.append(e);setTimeout(()=>e.remove(),2800)}
 const cid=(a,b)=>[a,b].sort().join('_'),oth=c=>c.members.find(x=>x!=me.uid);
-let me=null,ready=false,step='in',pend=null,hb,cur=null,curU=null,tab='chats',q='',emo=false,lt=0,ptm;
+let me=null,ready=false,step='in',pend=null,emsg='',hb,cur=null,curU=null,tab='chats',q='',emo=false,lt=0,ptm;
 let CH={},U={},MS=[],first=true,uC,uM,uU;
 async function user(id){if(!U[id]){const s=await getDoc(doc(db,'users',id));U[id]=s.exists()?s.data():{name:'Usuário'}}return U[id]}
 /* auth */
 onAuthStateChanged(auth,async u=>{
  if(!u){cleanup();me=null;step='in'}
- else{try{const s=await getDoc(doc(db,'users',u.uid));if(s.exists()){me={uid:u.uid,...s.data()};U[u.uid]=me;enter()}else if(pend)await mk(u,pend);else{me={uid:u.uid,email:u.email};step='name'}}catch(e){toast('Erro ao carregar perfil: '+err(e))}}
+ else{try{const s=await getDoc(doc(db,'users',u.uid));if(s.exists()){me={uid:u.uid,...s.data()};U[u.uid]=me;enter()}else if(pend)await mk(u,pend);else{me={uid:u.uid,email:u.email};step='name'}}catch(e){me=null;step='err';emsg=e.code=='permission-denied'?'O Firestore bloqueou o acesso. As regras de segurança ainda não foram publicadas no projeto do Firebase.':err(e)}}
  ready=true;render()});
 async function mk(u,n){await setDoc(doc(db,'users',u.uid),{name:n,email:(u.email||'').toLowerCase(),createdAt:serverTimestamp(),lastSeen:serverTimestamp()});me={uid:u.uid,name:n,email:u.email};U[u.uid]=me;pend=null;enter()}
 function cleanup(){uC&&uC();uM&&uM();uU&&uU();uC=uM=uU=null;clearInterval(hb);CH={};U={};MS=[];cur=null;first=true;tab='chats'}
@@ -176,7 +176,8 @@ function render(){document.documentElement.dataset.theme=th();
  if(!ready)return app.innerHTML='<div class="hero"><div class="logo">Li</div></div>';
  if(!me||!me.name)return login();cur?chatView():main()}
 function login(){
-if(step=='name')app.innerHTML=`<div class="sheet" style="flex:1;border-radius:0;background:none;justify-content:center;align-items:stretch"><div style="align-self:center">${av('l')}</div><h2 style="font-size:30px;text-align:center">Como podemos te chamar?</h2><p class="mut" style="text-align:center">Esse nome aparece para seus contatos.</p><input class="in" id="nm" placeholder="Seu nome" maxlength="30"><button class="btn" data-a="start">Começar a conversar</button></div>`;
+if(step=='err')app.innerHTML=`<div class="sheet" style="flex:1;border-radius:0;background:none;justify-content:center;align-items:stretch"><div class="logo" style="align-self:center;margin-bottom:20px">Li</div><h2 style="text-align:center">Não foi possível entrar</h2><p class="mut" style="text-align:center">${esc(emsg)}</p><button class="btn" data-a="retry">Tentar de novo</button><button class="lk" data-a="out">Sair da conta</button></div>`;
+else if(step=='name')app.innerHTML=`<div class="sheet" style="flex:1;border-radius:0;background:none;justify-content:center;align-items:stretch"><div style="align-self:center">${av('l')}</div><h2 style="font-size:30px;text-align:center">Como podemos te chamar?</h2><p class="mut" style="text-align:center">Esse nome aparece para seus contatos.</p><input class="in" id="nm" placeholder="Seu nome" maxlength="30"><button class="btn" data-a="start">Começar a conversar</button></div>`;
 else{const up=step=='up';app.innerHTML=`<div class="hero"><i class="orb"></i><i class="orb b"></i><div class="logo">Li</div><h1>LiChat</h1><p>Conversas com estilo.<br>Rápidas, simples e seguras.</p></div>
 <div class="sheet"><h2>${up?'Crie sua conta':'Entre na sua conta'}</h2>${up?'<input class="in" id="nm" placeholder="Seu nome" maxlength="30" autocomplete="name">':''}
 <input class="in" id="em" type="email" inputmode="email" placeholder="E-mail" autocomplete="email">
@@ -221,6 +222,7 @@ async auth(t){const em=$('#em').value.trim().toLowerCase(),pw=$('#pw').value,up=
  t.disabled=true;const tx=t.textContent;t.textContent='Aguarde…';
  try{if(up){pend=n;await createUserWithEmailAndPassword(auth,em,pw)}else await signInWithEmailAndPassword(auth,em,pw)}
  catch(e){pend=null;t.disabled=false;t.textContent=tx;toast(err(e))}},
+retry(){location.reload()},
 sw(){step=step=='up'?'in':'up';render()},
 async reset(){const em=$('#em').value.trim();if(!em)return toast('Digite seu e-mail no campo acima');try{await sendPasswordResetEmail(auth,em);toast('Enviamos um link para redefinir sua senha')}catch(e){toast(err(e))}},
 async start(){const n=$('#nm').value.trim();if(!n)return toast('Digite seu nome');
