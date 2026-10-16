@@ -164,7 +164,7 @@ onAuthStateChanged(auth,async u=>{
  ready=true;render()});
 async function mk(u,n){await setDoc(doc(db,'users',u.uid),{name:n,email:(u.email||'').toLowerCase(),createdAt:serverTimestamp(),lastSeen:serverTimestamp()});me={uid:u.uid,name:n,email:u.email};U[u.uid]=me;pend=null;enter()}
 function cleanup(){call&&endCall();uCall&&uCall();uCL&&uCL();uCall=uCL=null;CL=[];uC&&uC();uM&&uM();uU&&uU();uC=uM=uU=null;clearInterval(hb);CH={};U={};MS=[];cur=null;first=true;tab='chats'}
-function enter(){first=true;listen();listenCalls();beat()}
+function enter(){first=true;listen();listenCalls();beat();navInit()}
 function beat(){const f=()=>document.visibilityState=='visible'&&me&&setDoc(doc(db,'users',me.uid),{lastSeen:serverTimestamp()},{merge:true}).catch(()=>{});f();clearInterval(hb);hb=setInterval(f,3e4)}
 document.addEventListener('visibilitychange',()=>document.visibilityState=='visible'&&me?.name&&beat());
 /* dados */
@@ -239,6 +239,20 @@ function callUI(){const c=call,o=$('#co');if(!c)return;o.hidden=false;
 function callsHTML(){return CL.length?CL.map(c=>{const mine=c.from==me.uid,o=mine?c.to:c.from,ok=!!c.answer,l=mine?(ok?'Realizada':c.status=='declined'?'Recusada':'Sem resposta'):(ok?'Recebida':'Perdida');
  return`<div class="sw-w" data-id="${c.id}"><div class="sw-bg">${I('trash')}${I('trash')}</div><button class="row crow" data-a="cback" data-u="${o}">${av()}<div class="mid"><b>${esc(U[o]?.name)}</b><span class="pv">${l}</span></div><span class="r">${dk(c.t)==dk(Date.now())?tf(c.t):df(c.t)}</span>${I('call')}</button></div>`}).join(''):`<div class="empty">${I('call')}<br>Nenhuma chamada ainda.<br>Toque no telefone dentro de uma conversa.</div>`}
 if(window.visualViewport){const f=()=>{document.documentElement.style.height=visualViewport.height+'px';window.scrollTo(0,0);const m=$('#ms');m&&(m.scrollTop=m.scrollHeight)};visualViewport.addEventListener('resize',f);visualViewport.addEventListener('scroll',()=>window.scrollTo(0,0))}
+/* botão voltar (Android/navegador) */
+let skipPop=0,exitT=0;
+const inner=()=>!!(cur||tab!='chats'||document.querySelector('.ov'));
+function navInit(){const l=history.state?.l;if(l==2)history.replaceState({l:1},'');else if(l!=1){history.replaceState({l:0},'');history.pushState({l:1},'')}}
+function navSync(){if(skipPop||!me?.name)return;const l=history.state?.l;if(inner()&&l==1)history.pushState({l:2},'');else if(!inner()&&l==2){skipPop=1;history.back()}}
+function closeAll(){document.querySelector('.ov')?.remove();if(cur){uM&&uM();uU&&uU();uM=uU=null;cur=null;rp=null}tab='chats';render()}
+addEventListener('popstate',()=>{
+ if(skipPop){skipPop=0;return}
+ const l=history.state?.l;
+ if(call){history.pushState({l:(l??0)+1},'');return}
+ if(inner()){closeAll();if(l!=1)history.pushState({l:1},'');return}
+ if(l==1||l==2)return;
+ if(Date.now()-exitT<2500){exitT=0;history.back()}
+ else{exitT=Date.now();toast('Pressione voltar novamente para sair');history.pushState({l:1},'')}});
 /* gestos */
 function rbar(){const e=$('#rb');if(!e)return;e.hidden=!rp;e.innerHTML=rp?`<div class="rq"><b>${rp.from==me.uid?'Você':esc(U[curU]?.name)}</b><span>${esc(rp.x)}</span></div><button class="ib" data-a="rx">${I('close')}</button>`:''}
 function setReply(m){rp={id:m.id,x:String(m.x).slice(0,140),from:m.from};rbar();const t=$('#ti');t&&t.focus()}
@@ -263,7 +277,7 @@ document.addEventListener('touchcancel',()=>{g=null;ri.hidden=true;app.style.tra
 function render(){document.documentElement.dataset.theme=th();
  if(!/^https?:$/.test(location.protocol))return app.innerHTML='<div class="sheet" style="flex:1;border-radius:0;background:none;justify-content:center"><div class="logo" style="align-self:center;margin-bottom:24px">Li</div><h2>Falta hospedar o app</h2><p class="mut">O login por SMS só funciona quando o LiChat é aberto por um endereço https, como usuario.github.io ou seuapp.web.app. Abrir o arquivo direto do celular não funciona.</p></div>';
  if(!ready)return app.innerHTML='<div class="hero"><div class="logo">Li</div></div>';
- if(!me||!me.name)return login();cur?chatView():main()}
+ if(!me||!me.name)return login();cur?chatView():main();navSync()}
 function login(){
 if(step=='err')app.innerHTML=`<div class="sheet" style="flex:1;border-radius:0;background:none;justify-content:center;align-items:stretch"><div class="logo" style="align-self:center;margin-bottom:20px">Li</div><h2 style="text-align:center">Não foi possível entrar</h2><p class="mut" style="text-align:center">${esc(emsg)}</p><button class="btn" data-a="retry">Tentar de novo</button><button class="lk" data-a="out">Sair da conta</button></div>`;
 else if(step=='name')app.innerHTML=`<div class="sheet" style="flex:1;border-radius:0;background:none;justify-content:center;align-items:stretch"><div style="align-self:center">${av('l')}</div><h2 style="font-size:30px;text-align:center">Como podemos te chamar?</h2><p class="mut" style="text-align:center">Esse nome aparece para seus contatos.</p><input class="in" id="nm" placeholder="Seu nome" maxlength="30"><button class="btn" data-a="start">Começar a conversar</button></div>`;
@@ -303,7 +317,7 @@ MS.filter(m=>ms(m.t)>ca).forEach(m=>{const t=ms(m.t),mine=m.from==me.uid,rd=mine
 h+=`<div class="m ${mine?'me':''}" data-id="${m.id}">${m.re?`<span class="qt" data-a="jump" data-id="${m.re.id}"><b>${m.re.from==me.uid?'Você':esc(U[curU]?.name)}</b><span>${esc(m.re.x)}</span></span>`:''}${esc(m.x)}<small class="${rd?'rd':''}">${tf(t)}${mine?I(rd?'dcheck':'check'):''}</small></div>`});
 if(typingNow())h+=`<div class="m ty"><i></i><i></i><i></i></div>`;
 e.innerHTML=h||`<div class="empty">${I('lock','s')} Diga oi 👋</div>`;e.scrollTop=e.scrollHeight}
-function sheet(){const o=document.createElement('div');o.className='ov';o.dataset.a='cls';o.innerHTML=`<div class="sheet"><h2>Nova conversa</h2><p class="mut" style="padding:0 24px">Digite o e-mail de quem já usa o LiChat.</p><div class="field" style="padding:8px 20px"><input id="an" type="email" inputmode="email" placeholder="E-mail do seu amigo"><button class="send" data-a="addc">${I('plus')}</button></div></div>`;app.append(o);$('#an').focus()}
+function sheet(){const o=document.createElement('div');o.className='ov';o.dataset.a='cls';o.innerHTML=`<div class="sheet"><h2>Nova conversa</h2><p class="mut" style="padding:0 24px">Digite o e-mail de quem já usa o LiChat.</p><div class="field" style="padding:8px 20px"><input id="an" type="email" inputmode="email" placeholder="E-mail do seu amigo"><button class="send" data-a="addc">${I('plus')}</button></div></div>`;app.append(o);$('#an').focus();navSync()}
 /* ações */
 const A={
 async auth(t){const em=$('#em').value.trim().toLowerCase(),pw=$('#pw').value,up=step=='up',n=up?$('#nm').value.trim():'';
@@ -321,7 +335,7 @@ async start(){const n=$('#nm').value.trim();if(!n)return toast('Digite seu nome'
 tab(t){tab=t.dataset.v;render()},
 open(t){openChat(t.dataset.id,t.dataset.u)},
 bk(){uM&&uM();uU&&uU();uM=uU=null;cur=null;rp=null;render()},
-nc(){sheet()},cls(t,e){if(e.target==t)t.remove()},
+nc(){sheet()},cls(t,e){if(e.target==t){t.remove();navSync()}},
 async addc(){const em=$('#an').value.trim().toLowerCase();if(!/^\S+@\S+\.\S+$/.test(em))return toast('E-mail inválido');if(em==(me.email||'').toLowerCase())return toast('Esse é o seu e-mail 😄');
  try{const s=await getDocs(query(collection(db,'users'),where('email','==',em),limit(1)));if(s.empty)return toast('Esse e-mail ainda não está no LiChat');
   const d=s.docs[0];U[d.id]=d.data();$('.ov')?.remove();openChat(cid(me.uid,d.id),d.id)}catch(e){toast('Erro na busca: '+err(e))}},
