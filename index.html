@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>LiChat</title>
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="apple-mobile-web-app-title" content="LiChat"><meta name="theme-color" content="#0a0a0a"><link rel="apple-touch-icon" href="apple-touch-icon.png"><link rel="icon" href="icon-192.png"><link rel="manifest" href="manifest.webmanifest">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;800&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#fafafa;--s:#f0f0f0;--s2:#e2e2e2;--on:#101010;--on2:#6b6b6b;--pri:#101010;--onpri:#fff;--out:#d6d6d6;--bo:#101010;--bot:#fff;--bi:#fff;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
@@ -114,14 +115,23 @@ button{border:0;background:none;cursor:pointer}
 <symbol id="dcheck" viewBox="0 0 24 24"><path d="M18 7l-1.41-1.41-6.34 6.34 1.41 1.41L18 7zm4.24-1.41L11.66 16.17 7.48 12l-1.41 1.41L11.66 19l12-12-1.42-1.41zM.41 13.41L6 19l1.41-1.41L1.83 12 .41 13.41z"/></symbol>
 <symbol id="smile" viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm3.5-10c.83 0 1.5-.67 1.5-1.5S16.33 7 15.5 7 14 7.67 14 8.5s.67 1.5 1.5 1.5zm-7 0C9.33 10 10 9.33 10 8.5S9.33 7 8.5 7 7 7.67 7 8.5 7.67 10 8.5 10zm3.5 7.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z"/></symbol>
 <symbol id="mic" viewBox="0 0 24 24"><path d="M12 14c1.66 0 2.99-1.34 2.99-3L15 5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"/></symbol>
-</defs></svg>
+<symbol id="micoff" viewBox="0 0 24 24"><path d="M19 11h-1.7c0 .74-.16 1.43-.43 2.05l1.23 1.23c.56-.98.9-2.09.9-3.28zm-4.02.17c0-.06.02-.11.02-.17V5c0-1.66-1.34-3-3-3S9 3.34 9 5v.18l5.98 5.99zM4.27 3L3 4.27l6.01 6.01V11c0 1.66 1.33 3 2.99 3 .22 0 .44-.03.65-.08l1.66 1.66c-.71.33-1.5.52-2.31.52-2.76 0-5.3-2.1-5.3-5.1H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c.91-.13 1.77-.45 2.54-.9L19.73 21 21 19.73 4.27 3z"/></symbol><symbol id="end" viewBox="0 0 24 24"><path d="M12 9c-1.6 0-3.15.25-4.6.72v3.1c0 .39-.23.74-.56.9-.98.49-1.87 1.12-2.66 1.85-.18.18-.43.28-.7.28-.28 0-.53-.11-.71-.29L.29 13.08c-.18-.17-.29-.42-.29-.7 0-.28.11-.53.29-.71C3.34 8.78 7.46 7 12 7s8.66 1.78 11.71 4.67c.18.18.29.43.29.71 0 .28-.11.53-.29.71l-2.48 2.48c-.18.18-.43.29-.71.29-.27 0-.52-.11-.7-.28-.79-.73-1.68-1.36-2.66-1.85-.33-.16-.56-.51-.56-.9v-3.1C15.15 9.25 13.6 9 12 9z"/></symbol></defs></svg>
 <div id="app"></div>
-<style>[hidden]{display:none!important}.m small.rd{opacity:1}.empty .i{width:44px;height:44px;margin-bottom:10px;opacity:.5}</style>
+<div id="co" hidden></div><audio id="ra" autoplay playsinline></audio>
+<style>[hidden]{display:none!important}.m small.rd{opacity:1}.empty .i{width:44px;height:44px;margin-bottom:10px;opacity:.5}
+input,select,textarea{font-size:16px}html{-webkit-text-size-adjust:100%}body{overscroll-behavior:none}button{touch-action:manipulation}.toast{z-index:200}
+#co{position:fixed;inset:0;z-index:100;background:radial-gradient(circle at 50% 18%,#2c2c2c,#0a0a0a 70%);color:#f2f2f2;display:flex;flex-direction:column;justify-content:space-between;align-items:center;padding:calc(90px + env(safe-area-inset-top,0px)) 24px calc(56px + env(safe-area-inset-bottom,0px))}
+#co .cw{text-align:center}#co h2{font-size:32px;margin:24px 0 6px;letter-spacing:-1px}#co p{margin:0;color:#aaa;font-size:17px}
+#co .av.xl{width:140px;height:140px;margin:auto;background:#262626;animation:pl 2s ease-out infinite}#co .av.xl .i{width:90px;height:90px;margin-top:20px}
+@keyframes pl{0%{box-shadow:0 0 0 0 rgba(255,255,255,.25)}100%{box-shadow:0 0 0 40px rgba(255,255,255,0)}}
+.cb{display:flex;gap:46px}.cbt{display:flex;flex-direction:column;align-items:center;gap:10px;color:#ddd;font-size:13px}
+.cbt .i{width:68px;height:68px;padding:20px;border-radius:50%;background:#2b2b2b}.cbt.on .i,.cbt.ok .i{background:#f2f2f2;color:#101010}.cbt.rd .i{background:#e5484d;color:#fff}
+</style>
 <script type="module">
 import{initializeApp}from"https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
 import{getAnalytics,isSupported}from"https://www.gstatic.com/firebasejs/10.14.1/firebase-analytics.js";
 import{getAuth,createUserWithEmailAndPassword,signInWithEmailAndPassword,sendPasswordResetEmail,onAuthStateChanged,signOut}from"https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
-import{getFirestore,doc,getDoc,getDocs,setDoc,collection,query,where,orderBy,limit,onSnapshot,writeBatch,serverTimestamp,increment}from"https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+import{getFirestore,doc,getDoc,getDocs,setDoc,collection,query,where,orderBy,limit,onSnapshot,writeBatch,serverTimestamp,increment,addDoc,updateDoc}from"https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 const fb=initializeApp({apiKey:"AIzaSyA_Q30_1KoZUew-kkGT9mhotk_V6BPI6LI",authDomain:"lichatofc.firebaseapp.com",projectId:"lichatofc",storageBucket:"lichatofc.firebasestorage.app",messagingSenderId:"988492257148",appId:"1:988492257148:web:b7c2b4356689635cf9f6f9",measurementId:"G-3MRY3JK8DV"});
 isSupported().then(y=>y&&getAnalytics(fb)).catch(()=>{});
 const auth=getAuth(fb),db=getFirestore(fb);auth.languageCode='pt';
@@ -139,6 +149,7 @@ function toast(t){const e=document.createElement('div');e.className='toast';e.te
 const cid=(a,b)=>[a,b].sort().join('_'),oth=c=>c.members.find(x=>x!=me.uid);
 let me=null,ready=false,step='in',pend=null,emsg='',hb,cur=null,curU=null,tab='chats',q='',emo=false,lt=0,ptm;
 let CH={},U={},MS=[],first=true,uC,uM,uU;
+let call=null,CL=[],uCall,uCL,ac,rg;
 async function user(id){if(!U[id]){const s=await getDoc(doc(db,'users',id));U[id]=s.exists()?s.data():{name:'Usuário'}}return U[id]}
 /* auth */
 onAuthStateChanged(auth,async u=>{
@@ -146,8 +157,8 @@ onAuthStateChanged(auth,async u=>{
  else{try{const s=await getDoc(doc(db,'users',u.uid));if(s.exists()){me={uid:u.uid,...s.data()};U[u.uid]=me;enter()}else if(pend)await mk(u,pend);else{me={uid:u.uid,email:u.email};step='name'}}catch(e){me=null;step='err';emsg=e.code=='permission-denied'?'O Firestore bloqueou o acesso. As regras de segurança ainda não foram publicadas no projeto do Firebase.':err(e)}}
  ready=true;render()});
 async function mk(u,n){await setDoc(doc(db,'users',u.uid),{name:n,email:(u.email||'').toLowerCase(),createdAt:serverTimestamp(),lastSeen:serverTimestamp()});me={uid:u.uid,name:n,email:u.email};U[u.uid]=me;pend=null;enter()}
-function cleanup(){uC&&uC();uM&&uM();uU&&uU();uC=uM=uU=null;clearInterval(hb);CH={};U={};MS=[];cur=null;first=true;tab='chats'}
-function enter(){first=true;listen();beat()}
+function cleanup(){call&&endCall();uCall&&uCall();uCL&&uCL();uCall=uCL=null;CL=[];uC&&uC();uM&&uM();uU&&uU();uC=uM=uU=null;clearInterval(hb);CH={};U={};MS=[];cur=null;first=true;tab='chats'}
+function enter(){first=true;listen();listenCalls();beat()}
 function beat(){const f=()=>document.visibilityState=='visible'&&me&&setDoc(doc(db,'users',me.uid),{lastSeen:serverTimestamp()},{merge:true}).catch(()=>{});f();clearInterval(hb);hb=setInterval(f,3e4)}
 document.addEventListener('visibilitychange',()=>document.visibilityState=='visible'&&me?.name&&beat());
 /* dados */
@@ -170,6 +181,58 @@ async function sendMsg(){const t=$('#ti'),x=t.value.trim();if(!x)return toast('�
  b.set(doc(collection(db,'chats',cur,'messages')),{from:me.uid,x,t:serverTimestamp()});
  try{await b.commit()}catch(e){toast('Não foi possível enviar: '+err(e))}}
 const typingNow=()=>Date.now()-(CH[cur]?.typing?.[curU]||0)<5000;
+/* chamadas de voz (WebRTC + sinalização no Firestore) */
+const RTC={iceServers:[{urls:['stun:stun.l.google.com:19302','stun:stun1.l.google.com:19302']}]};
+const addC=(c,x)=>c.pc.remoteDescription?c.pc.addIceCandidate(x).catch(()=>{}):c.q.push(x);
+function beep(f,d){try{ac=ac||new(window.AudioContext||window.webkitAudioContext)();const o=ac.createOscillator(),g=ac.createGain();o.frequency.value=f;g.gain.value=.12;o.connect(g);g.connect(ac.destination);o.start();o.stop(ac.currentTime+d)}catch(e){}}
+function ring(){stopRing();ac&&ac.resume&&ac.resume();const f=()=>{beep(440,.4);setTimeout(()=>beep(480,.4),450)};f();rg=setInterval(f,2600)}
+function stopRing(){clearInterval(rg);rg=null}
+document.addEventListener('click',()=>{try{ac=ac||new(window.AudioContext||window.webkitAudioContext)();ac.resume()}catch(e){}},{once:true});
+async function getMic(){try{return await navigator.mediaDevices.getUserMedia({audio:true})}catch(e){toast('Permita o uso do microfone para chamadas');return null}}
+function newPC(c){const pc=new RTCPeerConnection(RTC);c.q=[];
+ pc.onicecandidate=e=>e.candidate&&addDoc(collection(db,'calls',c.id,'cand'),{by:me.uid,c:JSON.stringify(e.candidate)}).catch(()=>{});
+ pc.ontrack=e=>{const a=$('#ra');a.srcObject=e.streams[0];a.play().catch(()=>{})};
+ pc.oniceconnectionstatechange=()=>{const s=pc.iceConnectionState;
+  if((s=='connected'||s=='completed')&&c.st!='connected'){c.st='connected';c.t0=Date.now();stopRing();clearTimeout(c.to);callUI()}
+  else if(s=='failed')hang('Falha na conexão');
+  else if(s=='disconnected')setTimeout(()=>pc.iceConnectionState=='disconnected'&&call==c&&hang('Conexão perdida'),6000)};
+ return pc}
+function listenCand(c){c.un.push(onSnapshot(query(collection(db,'calls',c.id,'cand'),where('by','==',c.peer)),s=>s.docChanges().forEach(g=>g.type=='added'&&addC(c,JSON.parse(g.doc.data().c)))))}
+async function dial(){if(call)return;const peer=curU,stream=await getMic();if(!stream)return;await user(peer);
+ const id=doc(collection(db,'calls')).id,c=call={id,peer,dir:'out',st:'calling',stream,muted:false,un:[]};
+ try{const pc=c.pc=newPC(c);stream.getTracks().forEach(t=>pc.addTrack(t,stream));const o=await pc.createOffer();await pc.setLocalDescription(o);
+  await setDoc(doc(db,'calls',id),{from:me.uid,to:peer,members:[me.uid,peer],fromName:me.name,status:'ringing',t:Date.now(),offer:{type:o.type,sdp:o.sdp}});
+  c.un.push(onSnapshot(doc(db,'calls',id),async s=>{const d=s.data();if(!d||call!=c)return;
+   if(d.answer&&pc.signalingState=='have-local-offer'){await pc.setRemoteDescription(d.answer);c.q.splice(0).forEach(x=>pc.addIceCandidate(x).catch(()=>{}));if(c.st=='calling'){c.st='connecting';stopRing();callUI()}}
+   if(d.status=='declined')endCall('Chamada recusada');else if(d.status=='ended')endCall('Chamada encerrada')}));
+  listenCand(c);c.to=setTimeout(()=>call==c&&c.st!='connected'&&hang('Sem resposta'),45000);ring();callUI()}
+ catch(e){endCall('Não foi possível ligar: '+err(e))}}
+function listenCalls(){
+ uCall=onSnapshot(query(collection(db,'calls'),where('to','==',me.uid),where('status','==','ringing')),s=>s.docChanges().forEach(async g=>{const d=g.doc.data(),id=g.doc.id;
+  if(g.type=='removed'){if(call?.id==id&&call.st=='incoming')endCall('Chamada perdida');return}
+  if(g.type!='added'||Date.now()-d.t>45000)return;
+  if(call)return updateDoc(doc(db,'calls',id),{status:'declined'}).catch(()=>{});
+  await user(d.from);call={id,peer:d.from,dir:'in',st:'incoming',offer:d.offer,muted:false,un:[],q:[]};ring();callUI()}),()=>{});
+ uCL=onSnapshot(query(collection(db,'calls'),where('members','array-contains',me.uid)),async s=>{CL=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>b.t-a.t).slice(0,30);await Promise.all(CL.map(c=>user(c.from==me.uid?c.to:c.from)));if(tab=='calls'&&!cur&&me?.name)main()},()=>{})}
+async function accept(){const c=call;if(!c||c.st!='incoming')return;stopRing();c.st='connecting';callUI();
+ const stream=await getMic();if(!stream)return hang();c.stream=stream;
+ try{const pc=c.pc=newPC(c);stream.getTracks().forEach(t=>pc.addTrack(t,stream));await pc.setRemoteDescription(c.offer);const a=await pc.createAnswer();await pc.setLocalDescription(a);
+  listenCand(c);await updateDoc(doc(db,'calls',c.id),{answer:{type:a.type,sdp:a.sdp},status:'active'});
+  c.un.push(onSnapshot(doc(db,'calls',c.id),s=>{const d=s.data();if(d?.status=='ended'&&call==c)endCall('Chamada encerrada')}));
+  c.to=setTimeout(()=>call==c&&c.st!='connected'&&hang('Falha na conexão'),20000)}
+ catch(e){endCall('Não foi possível atender: '+err(e))}}
+function hang(m){const c=call;if(!c)return;updateDoc(doc(db,'calls',c.id),{status:c.st=='incoming'?'declined':'ended'}).catch(()=>{});endCall(m)}
+function mute(){const c=call;if(!c||!c.stream)return;c.muted=!c.muted;c.stream.getAudioTracks().forEach(t=>t.enabled=!c.muted);callUI()}
+function endCall(m){const c=call;if(!c)return;call=null;stopRing();clearTimeout(c.to);clearInterval(c.tk);c.un.forEach(f=>f());try{c.pc&&c.pc.close()}catch(e){}c.stream&&c.stream.getTracks().forEach(t=>t.stop());const o=$('#co');o.hidden=true;o.innerHTML='';$('#ra').srcObject=null;m&&toast(m)}
+function callUI(){const c=call,o=$('#co');if(!c)return;o.hidden=false;
+ const sub={calling:'Chamando…',incoming:'Chamada de voz do LiChat',connecting:'Conectando…',connected:'<span id="ct">00:00</span>'}[c.st];
+ o.innerHTML=`<div class="cw">${av('l xl')}<h2>${esc(U[c.peer]?.name||'LiChat')}</h2><p>${sub}</p></div>`+(c.st=='incoming'
+  ?`<div class="cb"><button class="cbt rd" data-a="dec">${I('end')}<span>Recusar</span></button><button class="cbt ok" data-a="acc">${I('call')}<span>Atender</span></button></div>`
+  :`<div class="cb"><button class="cbt ${c.muted?'on':''}" data-a="mute">${I(c.muted?'micoff':'mic')}<span>${c.muted?'Ativar som':'Silenciar'}</span></button><button class="cbt rd" data-a="hang">${I('end')}<span>Desligar</span></button></div>`);
+ if(c.st=='connected'&&!c.tk)c.tk=setInterval(()=>{const e=$('#ct');if(e){const s=Math.floor((Date.now()-c.t0)/1e3);e.textContent=String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0')}},500)}
+function callsHTML(){return CL.length?CL.map(c=>{const mine=c.from==me.uid,o=mine?c.to:c.from,ok=!!c.answer,l=mine?(ok?'Realizada':c.status=='declined'?'Recusada':'Sem resposta'):(ok?'Recebida':'Perdida');
+ return`<button class="row" data-a="cback" data-u="${o}">${av()}<div class="mid"><b>${esc(U[o]?.name)}</b><span class="pv">${l}</span></div><span class="r">${dk(c.t)==dk(Date.now())?tf(c.t):df(c.t)}</span>${I('call')}</button>`}).join(''):`<div class="empty">${I('call')}<br>Nenhuma chamada ainda.<br>Toque no telefone dentro de uma conversa.</div>`}
+if(window.visualViewport){const f=()=>{document.documentElement.style.height=visualViewport.height+'px';window.scrollTo(0,0);const m=$('#ms');m&&(m.scrollTop=m.scrollHeight)};visualViewport.addEventListener('resize',f);visualViewport.addEventListener('scroll',()=>window.scrollTo(0,0))}
 /* telas */
 function render(){document.documentElement.dataset.theme=th();
  if(!/^https?:$/.test(location.protocol))return app.innerHTML='<div class="sheet" style="flex:1;border-radius:0;background:none;justify-content:center"><div class="logo" style="align-self:center;margin-bottom:24px">Li</div><h2>Falta hospedar o app</h2><p class="mut">O login por SMS só funciona quando o LiChat é aberto por um endereço https, como usuario.github.io ou seuapp.web.app. Abrir o arquivo direto do celular não funciona.</p></div>';
@@ -191,7 +254,7 @@ function main(){
 const nv=(t,ic,l)=>`<button data-a="tab" data-v="${t}" class="${tab==t?'on':''}"><span class="pill">${I(ic)}</span>${l}${t=='chats'?'<span class="bd" id="nb" hidden></span>':''}</button>`;
 let b='';
 if(tab=='chats')b=`<div class="search">${I('search')}<input id="q" placeholder="Pesquisar conversas" value="${esc(q)}"></div><div id="list"></div>`;
-else if(tab=='calls')b=`<div class="empty">${I('call')}<br>Chamadas de voz e vídeo chegam em breve.</div>`;
+else if(tab=='calls')b=callsHTML();
 else b=`<div class="set"><div class="card" style="flex-direction:column;text-align:center">${av('l')}<input class="in" id="myn" value="${esc(me.name)}" style="text-align:center" maxlength="30"><span class="mut">${esc(me.email)}</span></div>
 <div class="card" data-a="theme"><span class="sp">Tema escuro</span><span class="sw ${th()=='dark'?'on':''}"></span></div>
 <div class="card col"><b>Sobre o LiChat</b><span class="mut">Criado por <b style="color:var(--on)">Lipee</b>, com o Claude como parceiro. Versão 2.0</span></div>
@@ -234,7 +297,7 @@ nc(){sheet()},cls(t,e){if(e.target==t)t.remove()},
 async addc(){const em=$('#an').value.trim().toLowerCase();if(!/^\S+@\S+\.\S+$/.test(em))return toast('E-mail inválido');if(em==(me.email||'').toLowerCase())return toast('Esse é o seu e-mail 😄');
  try{const s=await getDocs(query(collection(db,'users'),where('email','==',em),limit(1)));if(s.empty)return toast('Esse e-mail ainda não está no LiChat');
   const d=s.docs[0];U[d.id]=d.data();$('.ov')?.remove();openChat(cid(me.uid,d.id),d.id)}catch(e){toast('Erro na busca: '+err(e))}},
-call(){toast('Chamadas de voz chegam na próxima versão 🚧')},
+call(){dial()},acc(){accept()},dec(){hang()},hang(){hang()},mute(){mute()},cback(t){curU=t.dataset.u;dial()},
 mn(){const o=$('.menu');if(o)return o.remove();const m=document.createElement('div');m.className='menu';m.innerHTML='<button data-a="clr">Limpar conversa</button>';$('.top.chat').append(m)},
 clr(){$('.menu')?.remove();if(CH[cur])setDoc(doc(db,'chats',cur),{cleared:{[me.uid]:serverTimestamp()}},{merge:true}).then(()=>toast('Conversa limpa'))},
 em(){emo=!emo;$('#ep').hidden=!emo},emj(t){const i=$('#ti');i.value+=t.textContent;i.dispatchEvent(new Event('input',{bubbles:true}))},
